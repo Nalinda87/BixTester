@@ -107,7 +107,10 @@ app.get('/api/connect', async (req, res) => {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: '*/*',
+        Accept: 'text/event-streaming, application/json, */*',
+        'Content-Type': 'text/plain',
+        'Content-Transfer-Encoding': 'chunked',
+        'Access-Control-Allow-Origin': '*',
       },
     });
 
