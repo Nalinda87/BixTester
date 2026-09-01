@@ -1,0 +1,7 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Contains real Pega OAuth client secret / hostnames — keep local only.
+Pega.postman_collection.json

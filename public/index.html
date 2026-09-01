@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pega BIX Extraction Console</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>Pega BIX Extraction Console</h1>
+  <span id="status-pill" class="pill idle">idle</span>
+</header>
+
+<main>
+  <section class="panel" id="config-panel">
+    <h2>Connection</h2>
+    <div class="grid">
+      <label>Base URL
+        <input id="baseURL" type="text" placeholder="https://your-pega-host/prweb" />
+      </label>
+      <label>Access Token URL
+        <input id="accessTokenUrl" type="text" placeholder="https://your-pega-host/prweb/PRRestService/oauth2/v1/token" />
+      </label>
+      <label>Client ID
+        <input id="clientId" type="text" placeholder="OAuth2 client ID" />
+      </label>
+      <label>Client Secret
+        <input id="clientSecret" type="password" placeholder="OAuth2 client secret" />
+      </label>
+    </div>
+    <p class="hint">Saved to this browser's local storage only. Sent to the local proxy server, never directly from the browser to Pega.</p>
+  </section>
+
+  <div class="columns">
+    <section class="panel">
+      <h2>1. Register</h2>
+      <label>Request body (JSON)
+        <textarea id="registerBody" rows="12">{
+  "targetApplicationName": "YourApp",
+  "targetApplicationType": "REST",
+  "targetApplicationBaseURL": "https://your-pega-host/prweb/PRAuth/app/your-app",
+  "targetApplicationDescription": "Description of the target application",
+  "objectID": "YourOrg-Data-Class",
+  "channelType": "API"
+}</textarea>
+      </label>
+      <button id="registerBtn">Register</button>
+      <div class="field-row">
+        <label class="grow">Register ID
+          <input id="registerID" type="text" placeholder="Populated from register response, or paste one" />
+        </label>
+      </div>
+      <h3>Response</h3>
+      <pre id="registerOutput" class="output"></pre>
+    </section>
+
+    <section class="panel">
+      <h2>2. Connect (stream)</h2>
+      <div class="field-row">
+        <button id="connectBtn">Start streaming</button>
+        <button id="disconnectBtn" disabled>Stop</button>
+        <button id="clearBtn">Clear output</button>
+      </div>
+      <h3>Streamed output</h3>
+      <pre id="streamOutput" class="output stream"></pre>
+    </section>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
