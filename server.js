@@ -43,6 +43,10 @@ async function getAccessToken({ accessTokenUrl, clientId, clientSecret }) {
   return data.access_token;
 }
 
+function clearCachedToken({ accessTokenUrl, clientId }) {
+  tokenCache.delete(`${accessTokenUrl}::${clientId}`);
+}
+
 function requireAuthConfig(body) {
   const { accessTokenUrl, clientId, clientSecret, baseURL } = body || {};
   if (!accessTokenUrl || !clientId || !clientSecret || !baseURL) {
@@ -52,6 +56,20 @@ function requireAuthConfig(body) {
   }
   return { accessTokenUrl, clientId, clientSecret, baseURL };
 }
+
+// POST /api/token/refresh  { accessTokenUrl, clientId, clientSecret, baseURL }
+// Drops any cached token for this client and fetches a fresh one.
+app.post('/api/token/refresh', async (req, res) => {
+  try {
+    const auth = requireAuthConfig(req.body);
+    clearCachedToken(auth);
+    const token = await getAccessToken(auth);
+    const cached = tokenCache.get(`${auth.accessTokenUrl}::${auth.clientId}`);
+    res.json({ ok: true, expiresAt: cached ? cached.expiresAt : null, tokenPreview: `${token.slice(0, 8)}…` });
+  } catch (err) {
+    res.status(err.status || 500).json({ ok: false, error: err.message });
+  }
+});
 
 // POST /api/register  { baseURL, accessTokenUrl, clientId, clientSecret, payload }
 app.post('/api/register', async (req, res) => {
